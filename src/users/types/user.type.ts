@@ -2,21 +2,21 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class UserType {
-  @Field((type) => String)
-  id: number;
+  @Field()
+  id?: string;
 
   @Field({ nullable: true })
   name?: string;
 
-  @Field((type) => String)
+  @Field()
   email: string;
 
-  @Field((type) => String)
+  @Field()
   username: string;
 
-  @Field((type) => String)
+  @Field()
   phone: string;
 
-  @Field((type) => String)
+  @Field()
   address: string;
 }

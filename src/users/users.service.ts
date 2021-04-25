@@ -1,15 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { User, UserDocument } from './entities/user.schema';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    try {
+      const createdUser = new this.userModel(createUserInput);
+      const user = await createdUser.save();
+
+      return user;
+    } catch (error) {
+      if (error.code === 11000) {
+        throw new BadRequestException(
+          `[${JSON.stringify(error.keyValue)}] is alredy exist`,
+        );
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<User[]> {
+    const users = await this.userModel.find().exec();
+    return users;
   }
 
   findOne(id: number) {
