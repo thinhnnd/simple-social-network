@@ -29,12 +29,15 @@ export class UsersService {
     return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string): Promise<User> {
+    return await this.userModel.findById(id);
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+    const user = await this.userModel.findById(id);
+    const updatedUser = Object.assign(user, updateUserInput);
+    console.log(updatedUser);
+    return await this.userModel.findOneAndUpdate({ _id: id }, updatedUser);
   }
 
   remove(id: number) {
